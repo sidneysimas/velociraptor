@@ -86,6 +86,29 @@ tools. On Ubuntu this is simply:
 ```bash
 $ sudo apt-get install mingw-w64-x86-64-dev gcc-mingw-w64-x86-64 gcc-mingw-w64
 ```
+other method
+
+Task 1: Installing Velociraptor on Linux
+Finding the Latest Version
+In a Web browser, go to
+```
+https://github.com/Velocidex/velociraptor/releases
+```
+wget 
+![image](https://user-images.githubusercontent.com/9019646/224554322-9147abad-cbc5-428e-a777-141e13e97f10.png)
+```
+mkdir velociraptor
+cd velociraptor
+
+wget https://github.com/Velocidex/velociraptor/releases/download/v0.6.0/velociraptor-v0.6.0-1-linux-amd64
+
+chmod +x velociraptor-v0.6.0-1-linux-amd64
+./velociraptor-v0.6.0-1-linux-amd64 config generate > velociraptor.config.yaml
+```
+```
+ip a
+```
+
 
 ## Getting the latest version
 
