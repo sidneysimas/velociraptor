@@ -108,6 +108,128 @@ chmod +x velociraptor-v0.6.0-1-linux-amd64
 ```
 ip a
 ```
+```
+nano velociraptor.config.yaml
+```
+Press Ctrl+W, Ctrl+R. Find localhost and replace it with your server's IP address for all occurrences (there are two of them).
+Repeat the process to replace 127.0.0.1 with your server's IP address for all occurrences (there are three of them).
+
+Save the file with Ctrl+X, Y, Enter.
+On your Linux server, execute these command, to move the server configuration file to its home and create an admin user:
+```
+sudo mv velociraptor.config.yaml /etc
+
+./velociraptor-v0.6.0-1-linux-amd64 --config /etc/velociraptor.config.yaml user add admin --role administrator
+```
+When you are prompted to, enter a password you can remember.
+On your Linux server, execute this command, to start the server:
+```
+./velociraptor-v0.6.0-1-linux-amd64 --config /etc/velociraptor.config.yaml frontend -v
+```
+The server starts, as shown below.
+Leave this window open, and leave the process running.
+
+![image](https://user-images.githubusercontent.com/9019646/224554664-22804bdf-97d8-42f1-8853-83de1631530b.png)
+
+Viewing the GUI
+On your Windows machine, in a Web browser, open the GUI URL, for your server. My URL is outlined in the image above--yours will be different.
+Approve the use of an unsigned certificate.
+
+Log in as admin with the password you chose earlier.
+
+You see the GUI, as shown below.
+
+![image](https://user-images.githubusercontent.com/9019646/224554725-9b70295b-34fc-4cc1-a821-4a68a2ae57ef.png)
+
+Note for Azure Users
+If you are using Azure cloud machines, you will need to open TCP ports 8000 and 8889 in the Azure firewall on your Linux server, and view the GUI using the public IP address of your Linux server.
+To reach the firewall settings, start at https://portal.azure.com/#home and click "Virtual machines", click the name of your Linux server, and click Networking.
+
+Then click the "Add inbound port rule" and configure a rule as shown below.
+
+![image](https://user-images.githubusercontent.com/9019646/224554850-62e215e4-27c0-4ea7-86b9-34b3f859fc0a.png)
+
+Task 2: Adding a Windows Client
+Preparing a Client Config File
+On your Linux server, open a new Terminal or SSH session and execute this command, to edit the server configuration file:
+```
+sudo nano /etc/velociraptor.config.yaml
+```
+Scroll down to the first END CERTIFICATE line.
+Below the "nonce: line, insert this line, as shown in the image below:
+```
+use_self_signed_ssl: true
+```
+![image](https://user-images.githubusercontent.com/9019646/224554952-e125806e-25cf-496b-8ada-e507cd926a02.png)
+Save the file with Ctrl+X, Y, Enter.
+
+Preparing a Windows Client Installer
+On your Linux server, execute these commands, to prepare a client config file, download the EXE installer, and combine the two into a repackaged single-file Windows installer.
+The last commands make sure your Debian server has an SSH server running.
+```
+cd
+cd velociraptor
+
+./velociraptor-v0.6.0-1-linux-amd64 --config /etc/velociraptor.config.yaml config client > client.config.yaml
+
+wget https://github.com/Velocidex/velociraptor/releases/download/v0.6.0/velociraptor-v0.6.0-1-windows-amd64.exe
+
+./velociraptor-v0.6.0-1-linux-amd64 config repack --exe velociraptor-v0.6.0-1-windows-amd64.exe client.config.yaml repackaged_velociraptor.exe
+
+sudo apt update
+sudo apt install openssh-server -y
+```
+Installing the Windows Client
+On your Windows machine, in a Web browser, go to
+https://winscp.net/eng/index.php
+Download and install WinSCP, as shown below.
+
+![image](https://user-images.githubusercontent.com/9019646/224555089-162b6421-6896-4045-a744-a8a2622e4faa.png)
+
+![image](https://user-images.githubusercontent.com/9019646/224555100-ebab28e5-c09b-43d3-8944-174327bef728.png)
+
+Click Login. Click Yes. Click Continue.
+
+In the right pane, double-click the velociraptor folder.
+
+Drag the repackaged_velociraptor.exe file to your Windows desktop, as shown below.
+
+Then close WinSCP.
+
+![image](https://user-images.githubusercontent.com/9019646/224555116-4d42de65-ccf7-484d-afe6-ab101166292e.png)
+On your Windows machine, open an Administrator Command Prompt and execute these commands, as shown below.
+```
+cd %userprofile%\Desktop
+repackaged_velociraptor.exe service install
+```
+![image](https://user-images.githubusercontent.com/9019646/224555156-6a348333-29c5-4180-a05b-21f3e4973f66.png)
+
+Restart Velociraptor after reboot.
+```
+./velociraptor-v0.6.0-1-linux-amd64 --config /etc/velociraptor.config.yaml frontend -v
+
+sudo nano /etc/systemd/system/velociraptor.service
+		
+		[Unit]
+		Description=Velociraptor Service
+		After=network.target
+
+		[Service]
+		Type=simple
+		ExecStart=/caminho/para/o/executável/velociraptor-v0.6.8-rc1-linux-amd64 --config /etc/velociraptor.config.yaml frontend -v
+		Restart=always
+
+		[Install]
+		WantedBy=multi-user.target
+		
+sudo systemctl daemon-reload
+
+sudo systemctl start velociraptor
+
+sudo systemctl status velociraptor
+
+sudo systemctl enable velociraptor
+```
 
 
 ## Getting the latest version
