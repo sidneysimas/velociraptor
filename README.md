@@ -111,6 +111,14 @@ ip a
 ```
 nano velociraptor.config.yaml
 ```
+```
+Press Ctrl+W, Ctrl+R. Find localhost and replace it with your server's IP address for all occurrences (there are two of them).
+Repeat the process to replace 127.0.0.1 with your server's IP address for all occurrences (there are three of them).
+
+Save the file with Ctrl+X, Y, Enter.
+
+On your Linux server, execute these command, to move the server configuration file to its home and create an admin user:
+```
 Press Ctrl+W, Ctrl+R. Find localhost and replace it with your server's IP address for all occurrences (there are two of them).
 Repeat the process to replace 127.0.0.1 with your server's IP address for all occurrences (there are three of them).
 
